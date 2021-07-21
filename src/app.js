@@ -1,9 +1,7 @@
 const express = require('express')
-
 const app = express();
+const movieRoute = require('./routes/movieRoute');
 
-app.get('/', (req, res) => {
-    res.send('Hello World')
-})
+app.use('/api/movies', movieRoute);
 
 module.exports = app;
