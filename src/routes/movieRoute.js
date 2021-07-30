@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const Movie = require('../models/Movie');
+const auth = require('../auth');
 
 
 // Create movies, with jwt access
-router.post('/', async(req, res) => {
+router.post('/', auth, async(req, res) => {
     const newMovie = new Movie(req.body);
     try {
         const savedMovie = await newMovie.save()
@@ -33,7 +34,7 @@ router.get('/', async(req, res) => {
 })
 
 // get individual movies
-router.get('/id', async(req, res) => {
+router.get('/:id', async(req, res) => {
     const movieId= req.params.id
     try {
         const movie = await Movie.find({ _id: movieId });

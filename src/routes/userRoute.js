@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 //Register
@@ -21,21 +22,23 @@ router.post('/register', async(req, res) => {
     }
 })
 
-//Login
+// Login and Jwt
 router.post('/login', async(req, res) => {
     try {
-        const user = await User.findOne({ email: req.body.email})
-        if(!user) return res.status(400).json("Wrong credentials")
+        const user = await User.findOne({ username: req.body.username})
+        if(!user) return res.status(400).json("Wrong credentials1")
 
         const validated = await bcrypt.compare(req.body.password, user.password)
-        if(!validated) return res.status(400).json("Wrong credentials")
+        if(!validated) return res.status(400).json("Wrong credentials2")
 
-        return res.status(200).json(user);
+        const jwtUser = { username: user.username };
+        const token = jwt.sign(jwtUser, process.env.ACCESS_TOKEN, { expiresIn: '1h' });
+
+        return res.status(200).json({"token_key": token});
     }catch(err) {
         res.status(500).json(err)
     }
 })
-
 
 
 
